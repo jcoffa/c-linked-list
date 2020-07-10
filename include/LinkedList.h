@@ -27,7 +27,7 @@ typedef struct listNode{
     void *data;
     struct listNode *previous;
     struct listNode *next;
-} Node;
+} ListNode;
 
 
 /*
@@ -37,8 +37,8 @@ typedef struct listNode{
  * for working with the abstracted list data.
  */
 typedef struct listHead{
-    Node *head;
-    Node *tail;
+    ListNode *head;
+    ListNode *tail;
     int length;
     void (*deleteData)(void* toBeDeleted);
     int (*compare)(const void* first,const void* second);
@@ -52,7 +52,7 @@ typedef struct listHead{
  * The list implemntation is hidden from the user
  */
 typedef struct iter{
-    Node *current;
+    ListNode *current;
 } ListIterator;
 
 
@@ -84,7 +84,7 @@ void freeList(List *list);
 
 
 /**
- * Clears the list: frees the contents of the list - Node structs and data stored in them - 
+ * Clears the list: frees the contents of the list - ListNode structs and data stored in them - 
  * without deleting the List struct. Uses the supplied function pointer to release allocated memory for the data.
  *
  * @pre 'List' type must exist and be used in order to keep track of the linked list.
@@ -105,11 +105,11 @@ void clearList(List *list);
  * @return On success returns a node that can be added to a linked list. On failure, returns NULL.
  * @param data a void * pointer to any data type.  Data must be allocated on the heap.
  */
-Node *initializeNode(void *data);
+ListNode *initializeListNode(void *data);
 
 
 /**
- * Inserts a Node at the front of a linked list. List metadata is updated
+ * Inserts a ListNode at the front of a linked list. List metadata is updated
  * so that head and tail pointers are correct.
  *
  * @pre 'List' type must exist and be used in order to keep track of the linked list.
@@ -120,7 +120,7 @@ void insertBack(List *list, void *toBeAdded);
 
 
 /**
- * Inserts a Node at the front of a linked list.  List metadata is updated
+ * Inserts a ListNode at the front of a linked list.  List metadata is updated
  * so that head and tail pointers are correct.
  *
  * @pre 'List' type must exist and be used in order to keep track of the linked list.
@@ -159,7 +159,7 @@ void *deleteDataFromList(List *list, void *toBeDeleted);
  *
  * Should be used as the only insert function if a sorted list is required.  
  *
- * @pre List exists and has memory allocated to it. Node to be added is valid.
+ * @pre List exists and has memory allocated to it. ListNode to be added is valid.
  * @post The node to be added will be placed immediately before or after the first occurrence of a related node
  * @param list a pointer to the dummy head of the list containing function pointers for delete and compare, as well 
  *        as a pointer to the first and last element of the list.

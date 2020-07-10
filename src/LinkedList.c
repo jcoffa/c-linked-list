@@ -55,7 +55,7 @@ void freeList(List *list) {
 
 
 /**
- * Clears the list: frees the contents of the list - Node structs and data stored in them - 
+ * Clears the list: frees the contents of the list - ListNode structs and data stored in them - 
  * without deleting the List struct. Uses the supplied function pointer to release allocated memory for the data.
  *
  * @pre 'List' type must exist and be used in order to keep track of the linked list.
@@ -71,7 +71,7 @@ void clearList(List *list) {
 		return;
 	}
 	
-	Node* tmp;
+	ListNode* tmp;
 	
 	while (list->head != NULL) {
 		list->deleteData(list->head->data);
@@ -97,8 +97,8 @@ void clearList(List *list) {
  * @return On success returns a node that can be added to a linked list. On failure, returns NULL.
  * @param data a void * pointer to any data type.  Data must be allocated on the heap.
  */
-Node *initializeNode(void *data) {
-	Node *tmpNode = malloc(sizeof(Node));
+ListNode *initializeListNode(void *data) {
+	ListNode *tmpNode = malloc(sizeof(ListNode));
 	
 	if (tmpNode == NULL) {
 		return NULL;
@@ -113,7 +113,7 @@ Node *initializeNode(void *data) {
 
 
 /**
- * Inserts a Node at the front of a linked list. List metadata is updated
+ * Inserts a ListNode at the front of a linked list. List metadata is updated
  * so that head and tail pointers are correct.
  *
  * @pre 'List' type must exist and be used in order to keep track of the linked list.
@@ -127,7 +127,7 @@ void insertBack(List *list, void *toBeAdded) {
 	
 	(list->length)++;
 
-	Node *newNode = initializeNode(toBeAdded);
+	ListNode *newNode = initializeListNode(toBeAdded);
 	
 	if (list->head == NULL && list->tail == NULL) {
 		list->head = newNode;
@@ -141,7 +141,7 @@ void insertBack(List *list, void *toBeAdded) {
 
 
 /**
- * Inserts a Node at the front of a linked list.  List metadata is updated
+ * Inserts a ListNode at the front of a linked list.  List metadata is updated
  * so that head and tail pointers are correct.
  *
  * @pre 'List' type must exist and be used in order to keep track of the linked list.
@@ -155,7 +155,7 @@ void insertFront(List *list, void *toBeAdded) {
 	
 	(list->length)++;
 
-	Node *newNode = initializeNode(toBeAdded);
+	ListNode *newNode = initializeListNode(toBeAdded);
 	
 	if (list->head == NULL && list->tail == NULL) {
 		list->head = newNode;
@@ -205,12 +205,12 @@ void *deleteDataFromList(List* list, void *toBeDeleted) {
 		return NULL;
 	}
 	
-	Node* tmp = list->head;
+	ListNode* tmp = list->head;
 	
 	while(tmp != NULL) {
 		if (list->compare(toBeDeleted, tmp->data) == 0) {
 			//Unlink the node
-			Node* delNode = tmp;
+			ListNode* delNode = tmp;
 			
 			if (tmp->previous != NULL) {
 				tmp->previous->next = delNode->next;
@@ -246,7 +246,7 @@ void *deleteDataFromList(List* list, void *toBeDeleted) {
  *
  * Should be used as the only insert function if a sorted list is required.  
  *
- * @pre List exists and has memory allocated to it. Node to be added is valid.
+ * @pre List exists and has memory allocated to it. ListNode to be added is valid.
  * @post The node to be added will be placed immediately before or after the first occurrence of a related node
  * @param list a pointer to the dummy head of the list containing function pointers for delete and compare, as well 
  *        as a pointer to the first and last element of the list.
@@ -272,7 +272,7 @@ void insertSorted(List *list, void *toBeAdded) {
 		return;
 	}
 	
-	Node* currNode = list->head;
+	ListNode* currNode = list->head;
 	
 	while (currNode != NULL) {
 		if (list->compare(toBeAdded, currNode->data) <= 0) {
@@ -283,7 +283,7 @@ void insertSorted(List *list, void *toBeAdded) {
 			free(currDescr);
 			free(newDescr);
 		
-			Node* newNode = initializeNode(toBeAdded);
+			ListNode* newNode = initializeListNode(toBeAdded);
 			newNode->next = currNode;
 			newNode->previous = currNode->previous;
 			currNode->previous->next = newNode;
@@ -341,7 +341,7 @@ ListIterator createIterator(List* list) {
 
 
 void *nextElement(ListIterator *iter) {
-	Node* tmp = iter->current;
+	ListNode* tmp = iter->current;
 	
 	if (tmp != NULL) {
 		iter->current = iter->current->next;
