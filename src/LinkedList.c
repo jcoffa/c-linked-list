@@ -20,7 +20,7 @@
  * @param compareFunction function pointer to compare two nodes of the list in order to test for equality or order
  * @return pointer to the list head
  */
-List *initializeList(char *(*printFunction)(void *toBePrinted), void (*deleteFunction)(void *toBeDeleted), int (*compareFunction)(const void *first, const void *second)) {
+List *listNew(char *(*printFunction)(void *toBePrinted), void (*deleteFunction)(void *toBeDeleted), int (*compareFunction)(const void *first, const void *second)) {
 	assert(printFunction != NULL);
 	assert(deleteFunction != NULL);
 	assert(compareFunction != NULL);
@@ -48,8 +48,8 @@ List *initializeList(char *(*printFunction)(void *toBePrinted), void (*deleteFun
  * @param list pointer to the List-type dummy node
  * @return  on success: NULL, on failure: head of list
  */
-void freeList(List *list) {
-	clearList(list);
+void listFree(List *list) {
+	listClear(list);
 	free(list);
 }
 
@@ -62,7 +62,7 @@ void freeList(List *list) {
  * @post List struct still exists, list head = list tail = NULL, list length = 0
  * @param list pointer to the List-type dummy node
  */
-void clearList(List *list) {
+void listClear(List *list) {
 	if (list == NULL) {
 		return;
 	}
@@ -97,7 +97,7 @@ void clearList(List *list) {
  * @return On success returns a node that can be added to a linked list. On failure, returns NULL.
  * @param data a void * pointer to any data type.  Data must be allocated on the heap.
  */
-ListNode *initializeListNode(void *data) {
+ListNode *listNodeNew(void *data) {
 	ListNode *tmpNode = malloc(sizeof(ListNode));
 	
 	if (tmpNode == NULL) {
@@ -120,14 +120,14 @@ ListNode *initializeListNode(void *data) {
  * @param list pointer to the dummy head of the list
  * @param toBeAdded a pointer to data that is to be added to the linked list
  */
-void insertBack(List *list, void *toBeAdded) {
+void listInsertBack(List *list, void *toBeAdded) {
 	if (list == NULL || toBeAdded == NULL) {
 		return;
 	}
 	
 	(list->length)++;
 
-	ListNode *newNode = initializeListNode(toBeAdded);
+	ListNode *newNode = listNodeNew(toBeAdded);
 	
 	if (list->head == NULL && list->tail == NULL) {
 		list->head = newNode;
@@ -148,14 +148,14 @@ void insertBack(List *list, void *toBeAdded) {
  * @param list pointer to the dummy head of the list
  * @param toBeAdded a pointer to data that is to be added to the linked list
  */
-void insertFront(List *list, void *toBeAdded) {
+void listInsertFront(List *list, void *toBeAdded) {
 	if (list == NULL || toBeAdded == NULL) {
 		return;
 	}
 	
 	(list->length)++;
 
-	ListNode *newNode = initializeListNode(toBeAdded);
+	ListNode *newNode = listNodeNew(toBeAdded);
 	
 	if (list->head == NULL && list->tail == NULL) {
 		list->head = newNode;
@@ -175,7 +175,7 @@ void insertFront(List *list, void *toBeAdded) {
  * @param the list struct
  * @return pointer to the data located at the head of the list
  */
-void *getFromFront(List *list) {
+void *listGetFront(List *list) {
 	if (list->head == NULL) {
 		return NULL;
 	}
@@ -191,7 +191,7 @@ void *getFromFront(List *list) {
  * @param the list struct
  * @return pointer to the data located at the tail of the list
  */
-void *getFromBack(List *list) {
+void *listGetBack(List *list) {
 	if (list->tail == NULL) {
 		return NULL;
 	}
@@ -200,7 +200,7 @@ void *getFromBack(List *list) {
 }
 
 
-void *deleteDataFromList(List* list, void *toBeDeleted) {
+void *listDeleteData(List* list, void *toBeDeleted) {
 	if (list == NULL || toBeDeleted == NULL) {
 		return NULL;
 	}
@@ -252,23 +252,23 @@ void *deleteDataFromList(List* list, void *toBeDeleted) {
  *        as a pointer to the first and last element of the list.
  * @param toBeAdded a pointer to data that is to be added to the linked list
  */
-void insertSorted(List *list, void *toBeAdded) {
+void listInsertSorted(List *list, void *toBeAdded) {
 	if (list == NULL || toBeAdded == NULL) {
 		return;
 	}
 	
 	if (list->head == NULL) {
-		insertBack(list, toBeAdded);
+		listInsertBack(list, toBeAdded);
 		return;
 	}
 	
 	if (list->compare(toBeAdded, list->head->data) <= 0) {
-		insertFront(list, toBeAdded);
+		listInsertBack(list, toBeAdded);
 		return;
 	}
 	
 	if (list->compare(toBeAdded, list->tail->data) > 0) {
-		insertBack(list, toBeAdded);
+		listInsertBack(list, toBeAdded);
 		return;
 	}
 	
@@ -283,7 +283,7 @@ void insertSorted(List *list, void *toBeAdded) {
 			free(currDescr);
 			free(newDescr);
 		
-			ListNode* newNode = initializeListNode(toBeAdded);
+			ListNode* newNode = listNodeNew(toBeAdded);
 			newNode->next = currNode;
 			newNode->previous = currNode->previous;
 			currNode->previous->next = newNode;
@@ -309,15 +309,15 @@ void insertSorted(List *list, void *toBeAdded) {
  * @return On success: char * to string representation of list (must be freed after use).
  *         On failure: NULL
  */
-char *toString(List *list) {
-	ListIterator iter = createIterator(list);
+char *listToString(List *list) {
+	ListIterator iter = listCreateIterator(list);
 	char* str;
 		
 	str = (char*)malloc(sizeof(char));
 	strcpy(str, "");
 	
 	void *elem;
-	while ((elem = nextElement(&iter)) != NULL) {
+	while ((elem = listNextElement(&iter)) != NULL) {
 		char* currDescr = list->printData(elem);
 		int newLen = strlen(str)+50+strlen(currDescr);
 		str = (char*)realloc(str, newLen);
@@ -331,7 +331,7 @@ char *toString(List *list) {
 }
 
 
-ListIterator createIterator(List* list) {
+ListIterator listCreateIterator(List* list) {
 	ListIterator iter;
 
 	iter.current = list->head;
@@ -340,7 +340,7 @@ ListIterator createIterator(List* list) {
 }
 
 
-void *nextElement(ListIterator *iter) {
+void *listNextElement(ListIterator *iter) {
 	ListNode* tmp = iter->current;
 	
 	if (tmp != NULL) {
@@ -352,24 +352,24 @@ void *nextElement(ListIterator *iter) {
 }
 
 
-int getLength(List* list) {
+int listGetLength(List* list) {
 	return list->length;
 }
 
 
-void *findElement(List *list, bool (*customCompare)(const void *first,const void *second), const void *searchRecord) {
+void *listFindElement(List *list, bool (*customCompare)(const void *first,const void *second), const void *searchRecord) {
 	if (customCompare == NULL)
 		return NULL;
 
-	ListIterator itr = createIterator(list);
+	ListIterator itr = listCreateIterator(list);
 
-	void *data = nextElement(&itr);
+	void *data = listNextElement(&itr);
 	while (data != NULL)
 	{
 		if (customCompare(data, searchRecord))
 			return data;
 
-		data = nextElement(&itr);
+		data = listNextElement(&itr);
 	}
 
 	return NULL;

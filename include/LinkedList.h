@@ -69,7 +69,7 @@ typedef struct iter{
  * @param compareFunction function pointer to compare two nodes of the list in order to test for equality or order
  * @return pointer to the list head
  */
-List *initializeList(char *(*printFunction)(void *toBePrinted), void (*deleteFunction)(void *toBeDeleted), int (*compareFunction)(const void *first, const void *second));
+List *listNew(char *(*printFunction)(void *toBePrinted), void (*deleteFunction)(void *toBeDeleted), int (*compareFunction)(const void *first, const void *second));
 
 
 /**
@@ -80,7 +80,7 @@ List *initializeList(char *(*printFunction)(void *toBePrinted), void (*deleteFun
  * @param list pointer to the List-type dummy node
  * @return  on success: NULL, on failure: head of list
  */
-void freeList(List *list);
+void listFree(List *list);
 
 
 /**
@@ -91,7 +91,7 @@ void freeList(List *list);
  * @post List struct still exists, list head = list tail = NULL, list length = 0
  * @param list pointer to the List-type dummy node
  */
-void clearList(List *list);
+void listClear(List *list);
 
 
 /**
@@ -105,7 +105,7 @@ void clearList(List *list);
  * @return On success returns a node that can be added to a linked list. On failure, returns NULL.
  * @param data a void * pointer to any data type.  Data must be allocated on the heap.
  */
-ListNode *initializeListNode(void *data);
+ListNode *listNodeNew(void *data);
 
 
 /**
@@ -116,7 +116,7 @@ ListNode *initializeListNode(void *data);
  * @param list pointer to the dummy head of the list
  * @param toBeAdded a pointer to data that is to be added to the linked list
  */
-void insertBack(List *list, void *toBeAdded);
+void listInsertBack(List *list, void *toBeAdded);
 
 
 /**
@@ -127,7 +127,7 @@ void insertBack(List *list, void *toBeAdded);
  * @param list pointer to the dummy head of the list
  * @param toBeAdded a pointer to data that is to be added to the linked list
  */
-void insertFront(List *list, void *toBeAdded);
+void listInsertFront(List *list, void *toBeAdded);
 
 
 /**
@@ -137,7 +137,7 @@ void insertFront(List *list, void *toBeAdded);
  * @param the list struct
  * @return pointer to the data located at the head of the list
  */
-void *getFromFront(List *list);
+void *listGetFront(List *list);
 
 
 /**
@@ -147,10 +147,10 @@ void *getFromFront(List *list);
  * @param the list struct
  * @return pointer to the data located at the tail of the list
  */
-void *getFromBack(List *list);
+void *listGetBack(List *list);
 
 
-void *deleteDataFromList(List *list, void *toBeDeleted);
+void *listDeleteData(List *list, void *toBeDeleted);
 
 
 /**
@@ -165,7 +165,7 @@ void *deleteDataFromList(List *list, void *toBeDeleted);
  *        as a pointer to the first and last element of the list.
  * @param toBeAdded a pointer to data that is to be added to the linked list
  */
-void insertSorted(List *list, void *toBeAdded);
+void listInsertSorted(List *list, void *toBeAdded);
 
 
 /**
@@ -178,19 +178,27 @@ void insertSorted(List *list, void *toBeAdded);
  * @return On success: char * to string representation of list (must be freed after use).
  *         On failure: NULL
  */
-char *toString(List *list);
+char *listToString(List *list);
 
 
-ListIterator createIterator(List *list);
+/*
+ * A convenient alias for printing the string returned by `listToString(list)` and then
+ * freeing the string that was created after printing it.
+ * A newline is printed after the tree-string is done printing.
+ */
+void listPrint(List *list);
 
 
-void *nextElement(ListIterator *iter);
+ListIterator listCreateIterator(List *list);
 
 
-int getLength(List *list);
+void *listNextElement(ListIterator *iter);
 
 
-void *findElement(List *list, bool (*customCompare)(const void *first,const void *second), const void *searchRecord);
+int listGetLength(List *list);
+
+
+void *listFindElement(List *list, bool (*customCompare)(const void *first,const void *second), const void *searchRecord);
 
 #endif
 
