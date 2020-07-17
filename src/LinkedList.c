@@ -276,13 +276,6 @@ void listInsertSorted(List *list, void *toBeAdded) {
 	
 	while (currNode != NULL) {
 		if (list->compare(toBeAdded, currNode->data) <= 0) {
-		
-			char *currDescr = list->printData(currNode->data); 
-			char *newDescr = list->printData(toBeAdded); 
-		
-			free(currDescr);
-			free(newDescr);
-		
 			ListNode* newNode = listNodeNew(toBeAdded);
 			newNode->next = currNode;
 			newNode->previous = currNode->previous;
